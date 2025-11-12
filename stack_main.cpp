@@ -1,62 +1,108 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <assert.h>
+#include <string.h>
 
-struct stack_type {
-        int* data;
-        size_t size;
-        size_t capacity;
-} stack;
+#include "stack.h"
 
-void StackInit (stack_type* stack);
-void StackPush (stack_type* stack, int value);
-int StackPop (stack_type* stack);
-void StackDestroy (stack_type* stack);
+stack_errcodes_type UserCmds (stack_type* stack);
 
 int main ()
 {
+    stack_type stack;
+
     StackInit (&stack);
 
-    // printf ("size of stack = %zu,\nbut actual size = %zu\n", stack.capacity, stack.size);
+    printf (GREEN "passed initializing\n" COLOR_RESET);
 
-    // stack.data[1] = 'Z';
-    // printf ("data[1] = %c\n", *(stack.data + 1));
+    int err = UserCmds (&stack);
 
-    StackPush (&stack, 10);
+    PrintStack (&stack);
 
-    // printf ("stack[%zu] = %d, size = %zu\n", stack.size - 1, stack.data[stack.size - 1], stack.size);
-
-    int a = StackPop (&stack);
-
-    // printf ("stack[%zu] = %d, size = %zu\n", stack.size, a, stack.size);
+    printf (GREEN "passed reading users commands\n" COLOR_RESET);
 
     StackDestroy (&stack);
-//
+
+    printf (GREEN "passed destroying stack\n" COLOR_RESET);
+
     return 0;
 }
 
-void StackInit (stack_type* stack)
+stack_errcodes_type UserCmds (stack_type* stack)
 {
-    stack->capacity = 5;
-    stack->data = (int*) calloc (stack->capacity, sizeof (char));
-    stack->size = 0;
+    FILE* input_file = fopen ("input.txt", "r");
+    assert (input_file != NULL);
+
+    char cmd[MAXLENGTH] = "";
+
+    while (true) {
+        if (fscanf (input_file, "%s", cmd) <= 0) {
+            printf ("incorrect comand input\n");
+
+            return BAD_INPUT;
+        }
+
+        if (!strcmp (cmd, "PUSH")) {
+            int elem = 0;
+
+            if (fscanf (input_file, "%d", &elem) <= 0) {
+                printf ("incorrect argument input for PUSH\n");
+
+                return BAD_INPUT;
+            }
+
+            StackPush (stack, elem);
+
+            continue;
+        }
+
+        if (!strcmp (cmd, "POP")) {
+            StackPop (stack);
+
+            continue;
+        }
+
+        if (!strcmp (cmd, "ADD")) {
+            StackAdd (stack);
+
+            continue;
+        }
+
+        if (!strcmp (cmd, "SUB")) {
+            StackSub (stack);
+
+            continue;
+        }
+
+        if (!strcmp (cmd, "MUL")) {
+            StackMul (stack);
+
+            continue;
+        }
+
+        if (!strcmp (cmd, "DIV")) {
+            StackDiv (stack);
+
+            continue;
+        }
+
+        if (!strcmp (cmd, "HLT")) {
+            return NO_ERR;
+        }
+
+        printf ("incorrect comand input\n");
+        return BAD_INPUT;
+        }
+
+    return NO_ERR;
 }
 
-void StackPush (stack_type* stack, int value)
+void PrintStack (stack_type* stack)
 {
-    stack->data[stack->size++] = value;
-}
+    assert (stack != NULL);
 
-int StackPop (stack_type* stack)
-{
-    --stack->size;
+    for (size_t i = 0; i < stack->capacity; ++i)
+        printf ("[%d] ", stack->data[i]);
 
-    int a = stack->data[stack->size];
-
-    return a;
-}
-
-void StackDestroy (stack_type* stack)
-{
-    free (stack->data);
-    printf ("OK\n");
+    printf ("\n");
 }
