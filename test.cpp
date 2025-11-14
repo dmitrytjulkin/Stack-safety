@@ -1,16 +1,19 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+const int CANARY = 0x12345678;
+
 int main ()
 {
-    int* s = (int *) calloc (5, sizeof(int));
+    char* ptr = (char*)&CANARY;
+    int num_bytes = sizeof(CANARY);
 
-    for (int i = 0; i < 5; ++i)
-        s[i] = 25 - 4 * i;
 
-    s = (int *) realloc (s, 10);
+    printf("Представление числа %d в памяти:\n", CANARY);
 
-    s[6] = 1000;
+    for (int i = 0; i < num_bytes; i++) {
+        printf("%02x ", ptr[i]);
+    }
 
-    printf ("%d\n", s[6]);
+    printf ("\n");
 }

@@ -5,6 +5,7 @@
 
 void StackDestroy (stack_type* stack)
 {
+    StackOk (stack, "StackDestroy");
+
     free (stack->data);
-    // printf ("OK\n");
 }
