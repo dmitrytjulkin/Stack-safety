@@ -1,104 +1,38 @@
 #include <stdio.h>
-#include <assert.h>
 #include <string.h>
+#include <math.h>
 
 #include "stack.h"
 
-stack_errcodes_type UserComands (stack_type* stack)
-{
-    StackOk (stack, "UserComands");
-
-    FILE* input_file = fopen ("input.txt", "r");
-    assert (input_file != NULL);
-
-    char cmd[MAXLENGTH] = "";
-
-    while (true) {
-        // PrintStack (stack);
-
-        if (fscanf (input_file, "%s", cmd) <= 0) {
-            printf ("incorrect comand input\n");
-
-            return BAD_INPUT;
-        }
-
-        if (!strcmp (cmd, "PUSH")) {
-            int elem = 0;
-
-            if (fscanf (input_file, "%d", &elem) <= 0) {
-                printf ("incorrect argument input for PUSH\n");
-
-                return BAD_INPUT;
-            }
-
-            StackPush (stack, elem);
-
-            continue;
-        }
-
-        if (!strcmp (cmd, "POP")) {
-            StackPop (stack);
-
-            continue;
-        }
-
-        if (!strcmp (cmd, "ADD")) {
-            StackAdd (stack);
-
-            continue;
-        }
-
-        if (!strcmp (cmd, "SUB")) {
-            StackSub (stack);
-
-            continue;
-        }
-
-        if (!strcmp (cmd, "MUL")) {
-            StackMul (stack);
-
-            continue;
-        }
-
-        if (!strcmp (cmd, "DIV")) {
-            StackDiv (stack);
-
-            continue;
-        }
-
-        if (!strcmp (cmd, "HLT")) {
-            return NO_ERR;
-        }
-
-        printf ("incorrect comand input\n");
-        return BAD_INPUT;
-        }
-
-    return NO_ERR;
-}
-
 stack_errcodes_type StackPush (stack_type* stack, int value)
 {
-    StackOk (stack, "StackPush");
+    stack_errcodes_type errcode = NO_ERR;
+
+    if ((errcode = StackVerify (stack, "stack_operations.cpp", "StackPush")) != 0)
+        return errcode;
 
     if (stack->size == stack->capacity - 1) {
         stack->capacity += 10;
 
         stack->data = (double*) realloc (stack->data, stack->capacity * sizeof(double));
 
-        stack->data[stack->capacity - 1] = CANARY;
+        stack->data[stack->capacity - 1] = CANARY2;
     }
 
     stack->data[stack->size++] = value;
 
-    StackOk (stack, "StackPush");
+    if ((errcode = StackVerify (stack, "stack_operations.cpp", "StackPush")) != 0)
+        return errcode;
 
     return NO_ERR;
 }
 
-double* StackPop (stack_type* stack)
+stack_errcodes_type StackPop (stack_type* stack)
 {
-    StackOk (stack, "StackPop");
+    stack_errcodes_type errcode = NO_ERR;
+
+    if ((errcode = StackVerify (stack, "stack_operations.cpp", "StackPop")) != 0)
+        return errcode;
 
     double* last_elem = &stack->data[stack->size - 1];
     printf ("pop out: [%lg]\n", *last_elem);
@@ -106,59 +40,91 @@ double* StackPop (stack_type* stack)
     --stack->size;
     stack->data[stack->size] = 0;
 
-    StackOk (stack, "StackPop");
+    if ((errcode = StackVerify (stack, "stack_operations.cpp", "StackPop")) != 0)
+        return errcode;
 
-    return last_elem;
+    return NO_ERR;
 }
 
 stack_errcodes_type StackAdd (stack_type* stack)
 {
-    StackOk (stack, "StackAdd");
+    stack_errcodes_type errcode = NO_ERR;
+
+    if ((errcode = StackVerify (stack, "stack_operations.cpp", "StackAdd")) != 0)
+        return errcode;
 
     stack->data[stack->size - 2] += stack->data[stack->size - 1];
     stack->data[stack->size - 1] = 0;
     --stack->size;
 
-    StackOk (stack, "StackPop");
+    if ((errcode = StackVerify (stack, "stack_operations.cpp", "StackAdd")) != 0)
+        return errcode;
 
     return NO_ERR;
 }
 
 stack_errcodes_type StackSub (stack_type* stack)
 {
-    StackOk (stack, "StackSub");
+    stack_errcodes_type errcode = NO_ERR;
+
+    if ((errcode = StackVerify (stack, "stack_operations.cpp", "StackSub")) != 0)
+        return errcode;
 
     stack->data[stack->size - 2] -= stack->data[stack->size - 1];
     stack->data[stack->size - 1] = 0;
     --stack->size;
 
-    StackOk (stack, "StackSub");
+    if ((errcode = StackVerify (stack, "stack_operations.cpp", "StackSub")) != 0)
+        return errcode;
 
     return NO_ERR;
 }
 
 stack_errcodes_type StackMul (stack_type* stack)
 {
-    StackOk (stack, "StackMul");
+    stack_errcodes_type errcode = NO_ERR;
+
+    if ((errcode = StackVerify (stack, "stack_operations.cpp", "StackMul")) != 0)
+        return errcode;
 
     stack->data[stack->size - 2] *= stack->data[stack->size - 1];
     stack->data[stack->size - 1] = 0;
     --stack->size;
 
-    StackOk (stack, "StackMul");
+    if ((errcode = StackVerify (stack, "stack_operations.cpp", "StackMul")) != 0)
+        return errcode;
 
     return NO_ERR;
 }
 
 stack_errcodes_type StackDiv (stack_type* stack)
 {
-    StackOk (stack, "StackDiv");
+    stack_errcodes_type errcode = NO_ERR;
+
+    if ((errcode = StackVerify (stack, "stack_operations.cpp", "StackDiv")) != 0)
+        return errcode;
 
     stack->data[stack->size - 2] /= stack->data[stack->size - 1];
     stack->data[stack->size - 1] = 0;
     --stack->size;
 
-    StackOk (stack, "StackDiv");
+    if ((errcode = StackVerify (stack, "stack_operations.cpp", "StackDiv")) != 0)
+        return errcode;
+
+    return NO_ERR;
+}
+
+stack_errcodes_type StackSqrt (stack_type* stack)
+{
+    stack_errcodes_type errcode = NO_ERR;
+
+    if ((errcode = StackVerify (stack, "stack_operations.cpp", "StackSqrt")) != 0)
+        return errcode;
+
+    stack->data[stack->size - 1] = sqrt (stack->data[stack->size - 1]);
+
+    if ((errcode = StackVerify (stack, "stack_operations.cpp", "StackSqrt")) != 0)
+        return errcode;
 
     return NO_ERR;
 }
