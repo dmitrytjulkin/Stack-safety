@@ -80,7 +80,7 @@ stack_errcodes_type PrintStack (stack_type* stack, FILE* fp)
 {
     stack_errcodes_type errcode = NO_ERR;
 
-    for (size_t i = 0; i < stack->capacity; ++i)
+    for (size_t i = 0; i <= stack->capacity + 1; ++i)
         fprintf (fp, "[%lg] ", stack->data[i]);
 
     fprintf (fp, "\n\n");

@@ -16,10 +16,15 @@ stack_errcodes_type StackPush (stack_type* stack, int value)
 
         stack->data = (double*) realloc (stack->data, (stack->capacity + 2) * sizeof(double));
 
+        for (size_t i = stack->size + 1; i <= stack->capacity; ++i) {
+            stack->data[i] = POISON;
+        }
+
         stack->data[stack->capacity + 1] = CANARY2;
     }
 
-    stack->data[stack->size++] = value;
+    ++stack->size;
+    stack->data[stack->size] = value;
 
     if ((errcode = StackVerify (stack, "stack_operations.cpp", "StackPush")) != 0)
         return errcode;
@@ -34,11 +39,12 @@ stack_errcodes_type StackPop (stack_type* stack)
     if ((errcode = StackVerify (stack, "stack_operations.cpp", "StackPop")) != 0)
         return errcode;
 
-    double* last_elem = &stack->data[stack->size - 1];
+    double* last_elem = &stack->data[stack->size];
+
     printf ("pop out: [%lg]\n", *last_elem);
 
+    stack->data[stack->size] = POISON;
     --stack->size;
-    stack->data[stack->size] = 0;
 
     if ((errcode = StackVerify (stack, "stack_operations.cpp", "StackPop")) != 0)
         return errcode;
@@ -53,8 +59,8 @@ stack_errcodes_type StackAdd (stack_type* stack)
     if ((errcode = StackVerify (stack, "stack_operations.cpp", "StackAdd")) != 0)
         return errcode;
 
-    stack->data[stack->size - 2] += stack->data[stack->size - 1];
-    stack->data[stack->size - 1] = 0;
+    stack->data[stack->size - 1] += stack->data[stack->size];
+    stack->data[stack->size] = POISON;
     --stack->size;
 
     if ((errcode = StackVerify (stack, "stack_operations.cpp", "StackAdd")) != 0)
@@ -70,8 +76,8 @@ stack_errcodes_type StackSub (stack_type* stack)
     if ((errcode = StackVerify (stack, "stack_operations.cpp", "StackSub")) != 0)
         return errcode;
 
-    stack->data[stack->size - 2] -= stack->data[stack->size - 1];
-    stack->data[stack->size - 1] = 0;
+    stack->data[stack->size - 1] -= stack->data[stack->size];
+    stack->data[stack->size] = POISON;
     --stack->size;
 
     if ((errcode = StackVerify (stack, "stack_operations.cpp", "StackSub")) != 0)
@@ -87,8 +93,8 @@ stack_errcodes_type StackMul (stack_type* stack)
     if ((errcode = StackVerify (stack, "stack_operations.cpp", "StackMul")) != 0)
         return errcode;
 
-    stack->data[stack->size - 2] *= stack->data[stack->size - 1];
-    stack->data[stack->size - 1] = 0;
+    stack->data[stack->size - 1] *= stack->data[stack->size];
+    stack->data[stack->size] = POISON;
     --stack->size;
 
     if ((errcode = StackVerify (stack, "stack_operations.cpp", "StackMul")) != 0)
@@ -104,8 +110,8 @@ stack_errcodes_type StackDiv (stack_type* stack)
     if ((errcode = StackVerify (stack, "stack_operations.cpp", "StackDiv")) != 0)
         return errcode;
 
-    stack->data[stack->size - 2] /= stack->data[stack->size - 1];
-    stack->data[stack->size - 1] = 0;
+    stack->data[stack->size - 1] /= stack->data[stack->size];
+    stack->data[stack->size] = POISON;
     --stack->size;
 
     if ((errcode = StackVerify (stack, "stack_operations.cpp", "StackDiv")) != 0)

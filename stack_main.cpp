@@ -59,7 +59,7 @@ stack_errcodes_type UserComands (stack_type* stack)
     char cmd[MAXLENGTH] = "";
 
     while (true) {
-        // PrintStack (stack);
+        // PrintStack (stack, stdout);
 
         if (fscanf (input_file, "%s", cmd) <= 0) {
             printf ("incorrect comand input\n");
