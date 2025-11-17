@@ -6,11 +6,11 @@
 stack_errcodes_type StackInit (stack_type* stack)
 {
     stack->capacity = 5;
-    stack->data = (double*) calloc (stack->capacity, sizeof (double));
+    stack->data = (double*) calloc (stack->capacity + 2, sizeof (double));
     stack->size = 1;
 
     stack->data[0] = CANARY1;
-    stack->data[stack->capacity - 1] = CANARY2;
+    stack->data[stack->capacity + 1] = CANARY2;
 
     stack_errcodes_type errcode = NO_ERR;
 

@@ -14,9 +14,9 @@ stack_errcodes_type StackPush (stack_type* stack, int value)
     if (stack->size == stack->capacity - 1) {
         stack->capacity += 10;
 
-        stack->data = (double*) realloc (stack->data, stack->capacity * sizeof(double));
+        stack->data = (double*) realloc (stack->data, (stack->capacity + 2) * sizeof(double));
 
-        stack->data[stack->capacity - 1] = CANARY2;
+        stack->data[stack->capacity + 1] = CANARY2;
     }
 
     stack->data[stack->size++] = value;

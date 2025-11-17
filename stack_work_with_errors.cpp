@@ -29,7 +29,7 @@ stack_errcodes_type StackVerify (stack_type* stack, const char* filename, const 
     }
 
     if (!IsZero(stack->data[0] - CANARY1) ||
-        !IsZero(stack->data[stack->capacity - 1] - CANARY2)) {
+        !IsZero(stack->data[stack->capacity + 1] - CANARY2)) {
             StackDump (stack, CANARY_DIED, filename, funcname);
             printf ("Program ended with error code %d\n", CANARY_DIED);
             printf ("Canary was changed\n");
