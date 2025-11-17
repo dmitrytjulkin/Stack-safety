@@ -11,9 +11,8 @@ stack_errcodes_type StackInit (stack_type* stack)
 
     stack->data[0] = CANARY1;
 
-    for (size_t i = 1; i <= stack->capacity; ++i) {
+    for (size_t i = 1; i <= stack->capacity; ++i)
         stack->data[i] = POISON;
-    }
 
     stack->data[stack->capacity + 1] = CANARY2;
 
