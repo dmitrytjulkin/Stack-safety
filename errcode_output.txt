@@ -1,0 +1,11 @@
+StackDump called from file stack_main.cpp, from function UserCommands in line 39
+with error code(s):
+512 
+Stack size: 0
+Stack capacity: 5
+Location of stack [0x16fa4ee40]
+Location of stack data [0x16fa4eed0]
+
+Stack data:
+[ ] [ ] [ ] [ ] [ ] 
+

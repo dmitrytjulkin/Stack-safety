@@ -5,6 +5,11 @@
 
 stack_errcodes_type StackInit (stack_type* stack)
 {
+    if (stack == NULL) {
+        printf ("Program ended with error code %d\n", STACK_NULL_ERR);
+        printf ("Stack pointer = 0\n");
+    }
+
     stack->capacity = 5;
     stack->data = (double*) calloc (stack->capacity + 2, sizeof (double));
     stack->size = 0;
@@ -18,8 +23,7 @@ stack_errcodes_type StackInit (stack_type* stack)
 
     stack_errcodes_type errcode = NO_ERR;
 
-    if ((errcode = StackVerify (stack, "stack_init.cpp", "StackInit")) != 0)
-        return errcode;
+    errcode = StackVerify (stack, __FILE__, __func__, __LINE__);
 
     return errcode;
 }

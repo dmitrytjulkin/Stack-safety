@@ -1,13 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <assert.h>
 
 #include "stack.h"
 
 stack_errcodes_type StackDestroy (stack_type* stack)
 {
-    stack_errcodes_type errcode = StackVerify (stack, "stack_destroy.cpp", "StackDestroy");
+    assert (stack != NULL);
 
     free (stack->data);
 
-    return errcode;
+    return NO_ERR;
 }
